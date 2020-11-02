@@ -57,11 +57,11 @@ const commands: { [key: string]: (msg: Message) => Promise<void> } = {
     words.forEach((word) => {
       wordsstring += `${word}, `;
     });
-    msg.channel.send(`Words:\n${wordsstring}`);
+    msg.channel.send(wordsstring);
   },
 
   export: async (msg) => {
-    msg.channel.send("Words", { files: [env.DATA] });
+    msg.channel.send({ files: [env.DATA] });
   },
 
   import: async (msg) => {
