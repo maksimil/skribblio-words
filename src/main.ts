@@ -53,11 +53,15 @@ const commands: { [key: string]: (msg: Message) => Promise<void> } = {
       return;
     }
 
-    let wordsstring = "";
-    words.forEach((word) => {
-      wordsstring += `${word}, `;
-    });
-    msg.channel.send(wordsstring);
+    if (words.length > 0) {
+      let wordsstring = "";
+      words.forEach((word) => {
+        wordsstring += `${word}, `;
+      });
+      msg.channel.send(wordsstring);
+    } else {
+      msg.channel.send("There are no words");
+    }
   },
 
   export: async (msg) => {
