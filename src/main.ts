@@ -2,7 +2,9 @@ import { Client, Message } from "discord.js";
 import { exit } from "process";
 import { add, remove, list } from "./data";
 import env from "./config";
+import express from "express";
 
+// bot
 let token = env.TOKEN as string;
 let prefix = env.PREFIX as string;
 
@@ -53,7 +55,7 @@ const commands: { [key: string]: (msg: Message) => Promise<void> } = {
     }
     let wordsstring = "";
     words.forEach((word) => {
-      wordsstring += ` - ${word}\n`;
+      wordsstring += `${word}, `;
     });
     msg.channel.send(`Words:\n${wordsstring}`);
   },
@@ -77,4 +79,26 @@ client.on("message", (msg) => {
 
 client.login(token).then((token) => {
   console.log("Started");
+});
+
+// express list
+const app = express();
+
+app.get("/", async (req, res) => {
+  let words = await list();
+  if (!words) {
+    res.send("failed");
+    return;
+  }
+
+  let wordsstring = "";
+  words.forEach((word) => {
+    wordsstring += ` - ${word}<br>`;
+  });
+
+  res.send(`Words:<br>${wordsstring}`);
+});
+
+app.listen(env.PORT, () => {
+  console.log(`Listening on port ${env.PORT}`);
 });
