@@ -7,6 +7,12 @@ import express from "express";
 // bot
 let prefix = env.PREFIX as string;
 
+const getargsstring = (msg: Message) => {
+  let regres = msg.content.match(/ (.*)/);
+  if (!regres) return "";
+  else return regres[1];
+};
+
 const client = new Client();
 
 const commands: { [key: string]: (msg: Message) => Promise<void> } = {
@@ -21,7 +27,7 @@ const commands: { [key: string]: (msg: Message) => Promise<void> } = {
   },
 
   add: async (msg) => {
-    let word = msg.content.split(" ")[1];
+    let word = getargsstring(msg);
     const success = await add(word);
     if (success) {
       msg.channel.send(`Successfully added ${word}`);
@@ -31,7 +37,7 @@ const commands: { [key: string]: (msg: Message) => Promise<void> } = {
   },
 
   remove: async (msg) => {
-    let word = msg.content.split(" ")[1];
+    let word = getargsstring(msg);
     const success = await remove(word);
     if (success) {
       msg.channel.send(`Successfully removed ${word}`);
@@ -87,10 +93,10 @@ app.get("/", async (req, res) => {
 
   let wordsstring = "";
   words.forEach((word) => {
-    wordsstring += ` - ${word}<br>`;
+    wordsstring += `${word}, `;
   });
 
-  res.send(`Words:<br>${wordsstring}`);
+  res.send(wordsstring);
 });
 
 app.listen(env.PORT, () => {
