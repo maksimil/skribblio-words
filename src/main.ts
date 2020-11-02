@@ -1,6 +1,6 @@
 import { Client, Message } from "discord.js";
 import { exit } from "process";
-import { add, remove, getlist } from "./data";
+import { add, remove, getlist, addlist } from "./data";
 import env from "./config";
 import express from "express";
 
@@ -62,6 +62,18 @@ const commands: { [key: string]: (msg: Message) => Promise<void> } = {
 
   export: async (msg) => {
     msg.channel.send("Words", { files: [env.DATA] });
+  },
+
+  import: async (msg) => {
+    let wordslist = getargsstring(msg);
+    let words = JSON.parse(wordslist);
+
+    const success = await addlist(words);
+    if (success) {
+      msg.channel.send(`Successfully imported words`);
+    } else {
+      msg.channel.send(`Failed to import words`);
+    }
   },
 };
 

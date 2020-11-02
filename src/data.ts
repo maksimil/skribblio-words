@@ -14,11 +14,13 @@ export const getlist = async (): Promise<string[] | undefined> => {
   return JSON.parse(readFileSync(env.DATA, { encoding: "utf-8" }));
 };
 
-export const add = async (word: string): Promise<boolean> => {
+export const add = async (word: string): Promise<boolean> => addlist([word]);
+
+export const addlist = async (word: string[]): Promise<boolean> => {
   let words = await getlist();
   if (!words) return false;
 
-  words.push(word);
+  words.push(...word);
   await savelist(words);
   return true;
 };
