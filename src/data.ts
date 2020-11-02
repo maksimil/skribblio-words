@@ -3,7 +3,6 @@ import { existsSync, readFileSync, writeFileSync } from "fs";
 import env from "./config";
 
 if (!existsSync(env.DATA)) {
-  exec("mkdir data");
   writeFileSync(env.DATA, "[]");
 }
 

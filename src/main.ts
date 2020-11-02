@@ -59,6 +59,10 @@ const commands: { [key: string]: (msg: Message) => Promise<void> } = {
     });
     msg.channel.send(`Words:\n${wordsstring}`);
   },
+
+  export: async (msg) => {
+    msg.channel.send("Words", { files: [env.DATA] });
+  },
 };
 
 client.on("message", (msg) => {
