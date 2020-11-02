@@ -1,23 +1,16 @@
 import { Client, Message } from "discord.js";
 import { exit } from "process";
-import { add, remove, list } from "./data";
+import { add, remove, getlist } from "./data";
 import env from "./config";
 import express from "express";
 
 // bot
-let token = env.TOKEN as string;
 let prefix = env.PREFIX as string;
-
-if (!token || !prefix) {
-  console.log("TOKEN and PREFIX are not specified");
-  exit(1);
-}
 
 const client = new Client();
 
 const commands: { [key: string]: (msg: Message) => Promise<void> } = {
   help: async (msg) => {
-    console.log("Help");
     msg.reply("Ass");
   },
 
@@ -28,31 +21,42 @@ const commands: { [key: string]: (msg: Message) => Promise<void> } = {
   },
 
   add: async (msg) => {
-    let word = msg.content.split(" ")[1];
-    const success = await add(word);
+    let words = msg.content.split(" ");
+    words.splice(0, 1);
+    const success = await add(words);
     if (success) {
-      msg.channel.send(`Successfully added ${word}`);
+      words.forEach((word) => {
+        msg.channel.send(`Successfully added ${word}`);
+      });
     } else {
-      msg.channel.send(`Failed to add ${word}`);
+      words.forEach((word) => {
+        msg.channel.send(`Failed to add ${word}`);
+      });
     }
   },
 
   remove: async (msg) => {
-    let word = msg.content.split(" ")[1];
-    const success = await remove(word);
+    let words = msg.content.split(" ");
+    words.splice(0, 1);
+    const success = await remove(words);
     if (success) {
-      msg.channel.send(`Successfully removed ${word}`);
+      words.forEach((word) => {
+        msg.channel.send(`Successfully removed ${word}`);
+      });
     } else {
-      msg.channel.send(`Failed to remove ${word}`);
+      words.forEach((word) => {
+        msg.channel.send(`Failed to remove ${word}`);
+      });
     }
   },
 
   list: async (msg) => {
-    let words = await list();
+    let words = await getlist();
     if (!words) {
       msg.channel.send("Failed to get list");
       return;
     }
+
     let wordsstring = "";
     words.forEach((word) => {
       wordsstring += `${word}, `;
@@ -77,7 +81,7 @@ client.on("message", (msg) => {
   }
 });
 
-client.login(token).then((token) => {
+client.login(env.TOKEN).then((token) => {
   console.log("Started");
 });
 
@@ -85,7 +89,7 @@ client.login(token).then((token) => {
 const app = express();
 
 app.get("/", async (req, res) => {
-  let words = await list();
+  let words = await getlist();
   if (!words) {
     res.send("failed");
     return;
