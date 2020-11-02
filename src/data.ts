@@ -15,24 +15,30 @@ export const getlist = async (): Promise<string[] | undefined> => {
   return JSON.parse(readFileSync(env.DATA, { encoding: "utf-8" }));
 };
 
-export const add = async (word: string[]): Promise<boolean> => {
+export const add = async (word: string): Promise<boolean> => {
   let words = await getlist();
   if (!words) return false;
 
-  words.push(...word);
+  words.push(word);
   await savelist(words);
   return true;
 };
 
-export const remove = async (word: string[]): Promise<boolean> => {
+export const remove = async (word: string): Promise<boolean> => {
   let words = await getlist();
   if (!words) return false;
 
+  let include = false;
+
   words = words.filter((value) => {
-    return !word.includes(value);
+    if (word == value) {
+      include = true;
+      return false;
+    }
+    return true;
   });
 
   await savelist(words);
 
-  return true;
+  return include;
 };

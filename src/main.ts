@@ -21,32 +21,22 @@ const commands: { [key: string]: (msg: Message) => Promise<void> } = {
   },
 
   add: async (msg) => {
-    let words = msg.content.split(" ");
-    words.splice(0, 1);
-    const success = await add(words);
+    let word = msg.content.split(" ")[1];
+    const success = await add(word);
     if (success) {
-      words.forEach((word) => {
-        msg.channel.send(`Successfully added ${word}`);
-      });
+      msg.channel.send(`Successfully added ${word}`);
     } else {
-      words.forEach((word) => {
-        msg.channel.send(`Failed to add ${word}`);
-      });
+      msg.channel.send(`Failed to add ${word}`);
     }
   },
 
   remove: async (msg) => {
-    let words = msg.content.split(" ");
-    words.splice(0, 1);
-    const success = await remove(words);
+    let word = msg.content.split(" ")[1];
+    const success = await remove(word);
     if (success) {
-      words.forEach((word) => {
-        msg.channel.send(`Successfully removed ${word}`);
-      });
+      msg.channel.send(`Successfully removed ${word}`);
     } else {
-      words.forEach((word) => {
-        msg.channel.send(`Failed to remove ${word}`);
-      });
+      msg.channel.send(`Failed to remove ${word}`);
     }
   },
 
