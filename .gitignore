@@ -17,8 +17,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# token and prefix data
-src/config.ts
+# .env data
+.env
 
 # database
 data

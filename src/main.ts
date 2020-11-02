@@ -1,9 +1,15 @@
-import { c_token, c_prefix } from "./config";
 import { Client, Message } from "discord.js";
+import { exit } from "process";
 import { add, remove, list } from "./data";
+import env from "./config";
 
-let token = c_token;
-let prefix = c_prefix;
+let token = env.TOKEN as string;
+let prefix = env.PREFIX as string;
+
+if (!token || !prefix) {
+  console.log("TOKEN and PREFIX are not specified");
+  exit(1);
+}
 
 const client = new Client();
 
@@ -69,4 +75,6 @@ client.on("message", (msg) => {
   }
 });
 
-client.login(token).then(console.log);
+client.login(token).then((token) => {
+  console.log("Started");
+});
