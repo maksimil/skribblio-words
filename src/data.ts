@@ -1,7 +1,11 @@
+import { exec } from "child_process";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import env from "./config";
 
-if (!existsSync(env.DATA)) writeFileSync(env.DATA, "[]");
+if (!existsSync(env.DATA)) {
+  exec("mkdir data");
+  writeFileSync(env.DATA, "[]");
+}
 
 export const savelist = async (words: string[]): Promise<void> => {
   writeFileSync(env.DATA, JSON.stringify(words));
