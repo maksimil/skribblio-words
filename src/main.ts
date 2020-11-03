@@ -17,13 +17,13 @@ let helpembed: MessageEmbed = new MessageEmbed();
 helpobject.forEach((help) => {
   if (help.args.length > 0)
     helpembed.addField(
-      `${prefix}${help.command}${help.args.reduce(
+      `${help.command}${help.args.reduce(
         (acc, curr) => `${acc} <${curr}>`,
         ""
       )}`,
       help.desc
     );
-  else helpembed.addField(`${prefix}${help.command}`, help.desc);
+  else helpembed.addField(help.command, help.desc);
 });
 
 const getargsstring = (msg: Message) => {
