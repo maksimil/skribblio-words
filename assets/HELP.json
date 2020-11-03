@@ -6,13 +6,13 @@
   },
   {
     "command": "add",
-    "args": ["word"],
-    "desc": "adds word to wordlist"
+    "args": ["words string"],
+    "desc": "adds comma separated words to wordlist"
   },
   {
     "command": "remove",
-    "args": ["word"],
-    "desc": "removes word from wordlist"
+    "args": ["words string"],
+    "desc": "removes comma separated words from wordlist"
   },
   {
     "command": "list",
@@ -22,11 +22,6 @@
   {
     "command": "export",
     "args": [],
-    "desc": "exports a wordlist json file"
-  },
-  {
-    "command": "import",
-    "args": ["json string"],
-    "desc": "adds all words from json string"
+    "desc": "exports a wordlist into a file"
   }
 ]
