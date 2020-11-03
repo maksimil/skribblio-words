@@ -1,7 +1,6 @@
 import { Client, Message, MessageEmbed } from "discord.js";
 import { add, remove, getlist, addlist } from "./data";
 import env from "./config";
-import express from "express";
 import { readFileSync } from "fs";
 
 // bot
@@ -41,7 +40,6 @@ const commands: { [key: string]: (msg: Message) => Promise<void> } = {
 
   prefix: async (msg) => {
     prefix = msg.content.split(" ")[1];
-    console.log(`Set prefix to ${prefix}`);
     msg.channel.send(`Set prefix to ${prefix}`);
   },
 
@@ -118,26 +116,4 @@ client.on("message", (msg) => {
 
 client.login(env.TOKEN).then((token) => {
   console.log("Started");
-});
-
-// express list
-const app = express();
-
-app.get("/", async (req, res) => {
-  let words = await getlist();
-  if (!words) {
-    res.send("failed");
-    return;
-  }
-
-  let wordsstring = "";
-  words.forEach((word) => {
-    wordsstring += `${word}, `;
-  });
-
-  res.send(wordsstring);
-});
-
-app.listen(env.PORT, () => {
-  console.log(`Listening on port ${env.PORT}`);
 });
