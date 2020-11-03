@@ -1,11 +1,30 @@
-import { Client, Message } from "discord.js";
-import { exit } from "process";
+import { Client, Message, MessageEmbed } from "discord.js";
 import { add, remove, getlist, addlist } from "./data";
 import env from "./config";
 import express from "express";
+import { readFileSync } from "fs";
 
 // bot
 let prefix = env.PREFIX as string;
+
+const helpobject: {
+  command: string;
+  args: string[];
+  desc: string;
+}[] = JSON.parse(readFileSync("./assets/HELP.json", { encoding: "utf-8" }));
+
+let helpembed: MessageEmbed = new MessageEmbed();
+helpobject.forEach((help) => {
+  if (help.args.length > 0)
+    helpembed.addField(
+      `${prefix}${help.command}${help.args.reduce(
+        (acc, curr) => `${acc} <${curr}>`,
+        ""
+      )}`,
+      help.desc
+    );
+  else helpembed.addField(`${prefix}${help.command}`, help.desc);
+});
 
 const getargsstring = (msg: Message) => {
   let regres = msg.content.match(/ (.*)/);
@@ -17,7 +36,7 @@ const client = new Client();
 
 const commands: { [key: string]: (msg: Message) => Promise<void> } = {
   help: async (msg) => {
-    msg.reply("Ass");
+    msg.channel.send(helpembed);
   },
 
   prefix: async (msg) => {
