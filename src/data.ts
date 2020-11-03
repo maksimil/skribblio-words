@@ -1,45 +1,35 @@
-import { exec } from "child_process";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import env from "./config";
+import { jlistencode, jlistparse } from "./jlist";
 
 if (!existsSync(env.DATA)) {
-  writeFileSync(env.DATA, "[]");
+  writeFileSync(env.DATA, "");
 }
 
 export const savelist = async (words: string[]): Promise<void> => {
-  writeFileSync(env.DATA, JSON.stringify(words));
+  writeFileSync(env.DATA, jlistencode(words));
 };
 
 export const getlist = async (): Promise<string[] | undefined> => {
-  return JSON.parse(readFileSync(env.DATA, { encoding: "utf-8" }));
+  return jlistparse(readFileSync(env.DATA, { encoding: "utf-8" }));
 };
 
-export const add = async (word: string): Promise<boolean> => addlist([word]);
+export const add = async (words: string[]): Promise<boolean> => {
+  let listwords = await getlist();
+  if (!listwords) return false;
 
-export const addlist = async (word: string[]): Promise<boolean> => {
-  let words = await getlist();
-  if (!words) return false;
-
-  words.push(...word);
-  await savelist(words);
+  listwords.push(...words);
+  await savelist(listwords);
   return true;
 };
 
-export const remove = async (word: string): Promise<boolean> => {
-  let words = await getlist();
-  if (!words) return false;
+export const remove = async (words: string[]): Promise<boolean> => {
+  let listwords = await getlist();
+  if (!listwords) return false;
 
-  let include = false;
+  listwords = listwords.filter((value) => !words.includes(value));
 
-  words = words.filter((value) => {
-    if (word == value) {
-      include = true;
-      return false;
-    }
-    return true;
-  });
+  await savelist(listwords);
 
-  await savelist(words);
-
-  return include;
+  return true;
 };

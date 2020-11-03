@@ -1,7 +1,8 @@
 import { Client, Message, MessageEmbed } from "discord.js";
-import { add, remove, getlist, addlist } from "./data";
+import { add, remove, getlist } from "./data";
 import env from "./config";
 import { readFileSync } from "fs";
+import { jlistencode, jlistparse } from "./jlist";
 
 // bot
 let prefix = env.PREFIX as string;
@@ -44,22 +45,22 @@ const commands: { [key: string]: (msg: Message) => Promise<void> } = {
   },
 
   add: async (msg) => {
-    let word = getargsstring(msg);
-    const success = await add(word);
+    const words = jlistparse(getargsstring(msg));
+    const success = await add(words);
     if (success) {
-      msg.channel.send(`Successfully added ${word}`);
+      msg.channel.send(`Successfully added ${jlistencode(words)}`);
     } else {
-      msg.channel.send(`Failed to add ${word}`);
+      msg.channel.send(`Failed to add ${jlistencode(words)}`);
     }
   },
 
   remove: async (msg) => {
-    let word = getargsstring(msg);
-    const success = await remove(word);
+    const words = jlistparse(getargsstring(msg));
+    const success = await remove(words);
     if (success) {
-      msg.channel.send(`Successfully removed ${word}`);
+      msg.channel.send(`Successfully removed ${jlistencode(words)}`);
     } else {
-      msg.channel.send(`Failed to remove ${word}`);
+      msg.channel.send(`Failed to remove ${jlistencode(words)}`);
     }
   },
 
@@ -71,11 +72,7 @@ const commands: { [key: string]: (msg: Message) => Promise<void> } = {
     }
 
     if (words.length > 0) {
-      let wordsstring = "";
-      words.forEach((word) => {
-        wordsstring += `${word}, `;
-      });
-      msg.channel.send(wordsstring);
+      msg.channel.send(jlistencode(words));
     } else {
       msg.channel.send("There are no words");
     }
@@ -83,18 +80,6 @@ const commands: { [key: string]: (msg: Message) => Promise<void> } = {
 
   export: async (msg) => {
     msg.channel.send({ files: [env.DATA] });
-  },
-
-  import: async (msg) => {
-    let wordslist = getargsstring(msg);
-    let words = JSON.parse(wordslist);
-
-    const success = await addlist(words);
-    if (success) {
-      msg.channel.send(`Successfully imported words`);
-    } else {
-      msg.channel.send(`Failed to import words`);
-    }
   },
 };
 
